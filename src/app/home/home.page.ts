@@ -1,7 +1,6 @@
 import { Component, OnChanges } from '@angular/core';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
-import * as moment from 'moment';
 import { NavigationBar } from '@ionic-native/navigation-bar/ngx';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 
@@ -74,7 +73,7 @@ export class HomePage {
     let totalMilliSeconds = Math.floor(this.minutes * 6000) + (parseInt(this.seconds)*100);
 
     this.timer = setInterval(() => {
-      this.percent = (this.progress / totalMilliSeconds) * 118;
+      this.percent = (this.progress / totalMilliSeconds) * 100;
       ++this.progress
       if (this.percent >= this.radius) {
         this.outerStrokesColor = "#e9ff33";
