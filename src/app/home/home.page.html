@@ -1,14 +1,65 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content padding>
 
-<ion-content>
-  <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
-  </div>
+  <ion-item color="dark">
+    <ion-label>Rest Time</ion-label>
+    <ion-datetime 
+    id="set-time"
+    display-format="mm:ss" 
+    placeholder="Select Time" 
+    [ngModel]="fullTime"
+    (ngModelChange)="setRemainingTime($event)"
+    ></ion-datetime>
+  </ion-item>
+
+  <p class="overall-title">Training duration</p>
+  <p [class]="trainTimeClass">{{elapsed.h}}:{{elapsed.m}}:{{elapsed.s}}</p>
+  <div class="btn-start-training">
+    <ng-container *ngIf="overallTimer==false; else running">
+    <ion-button (click)="progressTimer()" shape="round">
+    Start Training
+    </ion-button>
+  </ng-container>
+  <ng-template #running>
+  <ion-button (click)="stopTimer()" shape="round">
+  Stop Training
+  </ion-button>
+  </ng-template>
+</div>
+  <div style="height:42vh; position:relative; margin-top:1em">
+  <ion-fab class="rest-button-wrapper" (click)="startTimer()">
+    <ion-fab-button class="rest-button">
+      <ion-icon name="play"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <circle-progress 
+  [percent]="percent"
+  [space]="4"
+  [maxPercent]="100"
+  [radius]="radius"
+  [showTitle]="false"
+  [showSubtitle]="false"
+  [showUnits]="false"
+  [innerStrokeWidth]="3"
+  [innerStrokeColor]="outerStrokesColor"
+  [outerStrokeWidth]="16"
+  [outerStrokeColor]="'#e9ff33'"
+  [showZeroOuterStroke]="false"
+  [backgroundStroke]="outerStrokesColor"
+  [backgroundStrokeWidth]="3"
+  [outerStrokeGradient]="true"
+  [outerStrokeGradientStopColor]="'#FF00CB'"
+  [showInnerStroke]="true"
+  [startFromZero]="true"
+  ></circle-progress>
+</div>
+
+<div>
+  <p class="overall-title">Resting time</p>
+  <p [class]="timeLeftClass">{{remainingTime}}</p>
+</div>
+
+
+
 </ion-content>
+
+

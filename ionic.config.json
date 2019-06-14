@@ -1,5 +1,8 @@
 {
   "name": "timer",
-  "integrations": {},
-  "type": "angular"
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular",
+  "id": "9b8cd9d6"
 }

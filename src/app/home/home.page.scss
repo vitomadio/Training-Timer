@@ -1,1 +1,47 @@
+p{
+    font-size: 3em;
+    color: #565656;
+    width: 100%;
+    text-align: center;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
 
+p.overall-title{
+    margin-top: 1.5em;
+    font-size: 16px !important;
+}
+
+.btn-start-training{
+    text-align: center;
+    ion-button {
+        font-family: 'Montserrat' !important;
+    }
+}
+
+.rest-button-wrapper {
+    position:absolute;
+    left: 50%;
+    margin-left: -12vh;
+    top: 50%; 
+    margin-top: -12vh;
+    width: 24vh;
+    height: 24vh;
+    font-size: 18px;
+}
+
+.rest-button {
+    width: 24vh;
+    height: 24vh;
+    font-size: 18px;
+    font-weight: 500;
+    --background: radial-gradient(#CD00FF 0%, #CD00FF 60% , #9500ba 70%, #81009e 85% ) !important;
+    ion-icon{ 
+        font-size: 70px;
+        margin-left: 10px;
+    }
+}
+
+.text-white{
+    color: white;
+}
