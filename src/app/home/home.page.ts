@@ -1,9 +1,8 @@
-import { Component, OnChanges } from '@angular/core';
+import { Component, OnChanges, OnInit } from '@angular/core';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
 import { NavigationBar } from '@ionic-native/navigation-bar/ngx';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
-
 
 @Component({
   selector: 'app-home',
@@ -26,7 +25,8 @@ export class HomePage {
   timer: any = false;
   overallTimer: any = false;
   fullTime: any = '00:00:15';
-
+  
+  beep: any = false;
   timeLeftClass: string = "";
   trainTimeClass: string = "";
   outerStrokesColor: string = "#33003F";
@@ -38,14 +38,21 @@ export class HomePage {
   };
   remainingTime:string = this.fullTime.slice(3,8);
 
-  constructor(private insomnia: Insomnia, private nativeAudio: NativeAudio) {
-   
+  constructor(
+    private insomnia: Insomnia,
+    private nativeAudio: NativeAudio,
+    private navigationBar: NavigationBar,
+    
+  ) {
     let autoHide: boolean = true;
-    // this.navigationBar.setUp(autoHide);
+    this.navigationBar.setUp(autoHide);
+    
   }
-
+  ngOninit() {
+    this.nativeAudio.preloadSimple('beep', './assets/beep.mp3')
+    this.nativeAudio.preloadSimple('final', './assets/final.mp3')
+  }
   
-
   touchMe() {
     console.log('touched');
   }
@@ -56,11 +63,12 @@ export class HomePage {
   }
 
   startTimer() {
-    this.nativeAudio.preloadSimple('soundId', '../../assets/alarm.mp3')
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
     if (this.countDownTimer) {
       clearInterval(this.countDownTimer);
+      clearInterval(this.timer);
+      if (this.beep) {
+        clearInterval(this.beep);
+      }
     }
     //SVG animation.
     let timeSplit = this.fullTime.split(':');
@@ -72,22 +80,22 @@ export class HomePage {
 
     let totalMilliSeconds = Math.floor(this.minutes * 6000) + (parseInt(this.seconds)*100);
 
-    this.timer = setInterval(() => {
-      this.percent = (this.progress / totalMilliSeconds) * 100;
-      ++this.progress
+    let forwardsTimer = () => {
+      this.percent = Math.floor((this.progress / totalMilliSeconds) * 100);
+      this.progress++
       if (this.percent >= this.radius) {
+        clearInterval(this.beep);
+        clearInterval(this.timer);
         this.outerStrokesColor = "#e9ff33";
+        this.nativeAudio.play('final');
         setTimeout(() => {
           this.outerStrokesColor = "#33003F";
           this.percent = 0;
           this.timeLeftClass = "";
-          this.nativeAudio.play('soundId')
-            .then(res => console.log(res))
-            .catch(err => console.log(err));
-        },2000)
-        clearInterval(this.timer)
+          this.nativeAudio.stop('final');
+        },2500)
       }
-    },10)
+    }
     
     //Resting Time Indicator.
     this.timeLeftClass = "text-white";
@@ -102,20 +110,28 @@ export class HomePage {
       } else {
         setTimeout(() => {
           this.remainingTime = this.fullTime.slice(3, 8);
-        },2400)
+        }, 2500)
+      }
+      if (secondsLeft == 5) {
+        this.beep = setInterval(() => {
+          this.nativeAudio.play('beep');
+        }, 1000)
       }
     }
+    
     // run once when clicked
+    forwardsTimer()
     backwardsTimer()
     // timers start 1 second later
     this.countDownTimer = setInterval(backwardsTimer, 1000)
-    
+    this.timer = setInterval(forwardsTimer, 10)
   }
 
   progressTimer() {
     if (this.overallTimer) {
       clearInterval(this.timer);
       clearInterval(this.countDownTimer);
+      clearInterval(this.beep);
     }
 
     this.insomnia.keepAwake();
@@ -147,6 +163,7 @@ export class HomePage {
     clearInterval(this.countDownTimer);
     clearInterval(this.timer);
     clearInterval(this.overallTimer);
+    clearInterval(this.beep);
     this.countDownTimer = false;
     this.overallTimer = false;
     this.timer = false;
